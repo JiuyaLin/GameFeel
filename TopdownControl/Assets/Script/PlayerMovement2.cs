@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement2 : MonoBehaviour
 {
-    Vector3 velocity;
-    public float speed;
+    Vector3 velocityThisFrame, velocity, acceleration;
+    public float speed, counterAccelerationModifier;
     public List<Transform> wallList = new List<Transform>();
     private SpriteRenderer mySpriteRenderer;
-    [SerializeField] float movementIncrement;
+    [SerializeField] float movementIncrement, accelerationSpeed, maxSpeed;
+    private float friction = 0.1f;
     
     // Start is called before the first frame update
     void Start()
@@ -19,45 +20,62 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        velocity = Vector3.zero; //zeo out the velocity at the beginning of each frame
+        float angleVelocityVsAcceleration = Vector3.Angle(velocity, acceleration);
+        float counterPushRatio = angleVelocityVsAcceleration / 180;
+        acceleration = Vector3.zero; //zero out the acceleration at the beginning of each frame
 
-        if(Input.GetKey(KeyCode.W)) velocity.y += 1 ; //W moves up
-        if(Input.GetKey(KeyCode.S)) velocity.y -= 1 ; //S moves down
-        if(Input.GetKey(KeyCode.D)) velocity.x += 1 ; //D moves right
-        if(Input.GetKey(KeyCode.A)) velocity.x -= 1 ; //A moves left
+        if(Input.GetKey(KeyCode.W)) acceleration.y += 1 ; //W moves up
+        if(Input.GetKey(KeyCode.S)) acceleration.y -= 1 ; //S moves down
+        if(Input.GetKey(KeyCode.D)) acceleration.x += 1 ; //D moves right
+        if(Input.GetKey(KeyCode.A)) acceleration.x -= 1 ; //A moves left
 
-        velocity = velocity.normalized * speed * Time.deltaTime;
+        acceleration = acceleration.normalized * accelerationSpeed * Time.deltaTime;
+        velocity += acceleration * (1+ counterPushRatio * counterAccelerationModifier);
+        if(velocity.magnitude > maxSpeed) velocity = velocity.normalized * maxSpeed;
+        if(acceleration == Vector3.zero){
+            if(velocity.magnitude > friction * Time.deltaTime){
+                velocity -= velocity.normalized * friction * Time.deltaTime;
+            }else{
+                velocity = Vector3.zero;
+            }
+        }
+
+
+
+
+
+        Vector3 velocityThisFrame = velocity;
         Vector3 microVelocity;
         Vector3 positionNextFrame = transform.position;
         bool velXPositive = false;
-        if(velocity.x > 0) velXPositive = true;
+        if(velocityThisFrame.x > 0) velXPositive = true;
         bool velYPositive = false;
-        if(velocity.y > 0) velYPositive = true;
+        if(velocityThisFrame.y > 0) velYPositive = true;
 
-        while(velocity != Vector3.zero){
-            if(Mathf.Abs(velocity.x)> Mathf.Abs(velocity.y)){
-                velocity.x -= MovementIncrementSigned(velXPositive);
+        while(velocityThisFrame != Vector3.zero){
+            if(Mathf.Abs(velocityThisFrame.x)> Mathf.Abs(velocityThisFrame.y)){
+                velocityThisFrame.x -= MovementIncrementSigned(velXPositive);
                 microVelocity = new Vector3(MovementIncrementSigned(velXPositive), 0, 0);
                 if(isThisPositionInWall(positionNextFrame + microVelocity)){
-                    velocity.x = 0;
+                    velocityThisFrame.x = 0;
                 }else{ 
                     positionNextFrame += microVelocity;
                 }
 
-                if(velocity.x < movementIncrement && velocity.x > -movementIncrement){
-                    velocity.x = 0;
+                if(velocityThisFrame.x < movementIncrement && velocityThisFrame.x > -movementIncrement){
+                    velocityThisFrame.x = 0;
                 }
             }else{//if velocity y > velocity x
-                velocity.y -= MovementIncrementSigned(velYPositive);
+                velocityThisFrame.y -= MovementIncrementSigned(velYPositive);
                 microVelocity = new Vector3(0, MovementIncrementSigned(velYPositive), 0);
                 if(isThisPositionInWall(positionNextFrame + microVelocity)){
-                    velocity.y = 0;
+                    velocityThisFrame.y = 0;
                 }else{ 
                     positionNextFrame += microVelocity;
                 }
 
-                if(velocity.y < movementIncrement && velocity.y > -movementIncrement){
-                    velocity.y = 0;
+                if(velocityThisFrame.y < movementIncrement && velocityThisFrame.y > -movementIncrement){
+                    velocityThisFrame.y = 0;
                 }
             }
 
