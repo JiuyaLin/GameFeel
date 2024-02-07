@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class CameraJuice : MonoBehaviour
 {
-    float shakeTimer;
-    [SerializeField] float shakeCamTimer, offsetXMax, offsetYMax, rotationMax;
+    [SerializeField] float shakeTimer, offsetXMax, offsetYMax, rotationMax;
     bool traumaused;
 
 
@@ -21,7 +20,7 @@ public class CameraJuice : MonoBehaviour
         
         if(shakeTimer > 0){
             float trauma = 1;
-            if(traumaused) trauma = (1+shakeTimer) * (1+shakeTimer);
+            //if(traumaused) trauma = (1+shakeTimer) * (1+shakeTimer);
 
             float shakeX = trauma * (Mathf.PerlinNoise1D(Time.time) * offsetXMax - (offsetXMax/2));
             float shakeY = trauma * (Mathf.PerlinNoise1D(Time.time + 1000) * offsetYMax - (offsetYMax/2));

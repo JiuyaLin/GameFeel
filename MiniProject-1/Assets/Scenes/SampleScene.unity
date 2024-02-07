@@ -224,7 +224,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &494912691
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -504,9 +504,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallList:
   - {fileID: 1480895427}
+  - {fileID: 1506192939}
+  - {fileID: 1486596395}
+  - {fileID: 941066381}
+  - {fileID: 285309125}
   anchor: {fileID: 0}
-  accelerationSpeed: 5
-  maxSpeed: 10
+  accelerationSpeed: 1
+  maxSpeed: 3
   friction: 1
   counterAccelerationMod: 0.1
   thetaSpeedMod: 0
@@ -529,7 +533,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &657988971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -719,7 +723,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1134236339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -825,7 +829,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1225630047
 MonoBehaviour:
   m_ObjectHideFlags: 0

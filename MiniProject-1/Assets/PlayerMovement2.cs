@@ -28,7 +28,7 @@ public class PlayerMovement2 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        movementIncrement = 0.001f * Time.deltaTime;
+        movementIncrement = 0.01f;
     }
 
     // Update is called once per frame
@@ -56,12 +56,12 @@ public class PlayerMovement2 : MonoBehaviour
 
         //update velocity
         float counterAcceleration = Vector3.Angle(velocity, acceleration) / 180 * counterAccelerationMod; //larger the angle, the more counter acceleration
-        acceleration = acceleration.normalized * accelerationSpeed; //normalize acceleration
+        acceleration = acceleration.normalized * accelerationSpeed * Time.deltaTime; //normalize acceleration
         velocity += acceleration * (1 - counterAcceleration); //add acceleration to velocity
         if(velocity.magnitude > maxSpeed) velocity = velocity.normalized * maxSpeed; //cap velocity
         if(acceleration == Vector3.zero){ //slowdown
-            if(velocity.magnitude > friction){
-                velocity -= velocity.normalized * friction;
+            if(velocity.magnitude > friction * Time.deltaTime){
+                velocity -= velocity.normalized * friction * Time.deltaTime;
             }
             else velocity = Vector3.zero;
         }
@@ -79,13 +79,10 @@ public class PlayerMovement2 : MonoBehaviour
             newPosition.y = anchor.transform.position.y + newXY.y;
             lastRTheta = new Vector3(newRTheta.x, newRTheta.y, 0);
             transform.position = newPosition; //move the player
-        }else{
-           newPosition = transform.position + velocity * Time.deltaTime; 
         }
 
 
-        //the below code will make the engione extremely inefficient and stuck
-        /*
+        
         //check if in wall
         Vector3 velocityThisFrame = velocity;
         Vector3 microVelocity;
@@ -110,11 +107,10 @@ public class PlayerMovement2 : MonoBehaviour
                     else newPosition += microVelocity;
                     if(velocityThisFrame.y < movementIncrement && velocityThisFrame.y > -movementIncrement){
                         velocityThisFrame.y = 0;}
-                }            
+                } 
             }
-        } */
+        } 
         
-
 
         transform.position = newPosition; //move the player
     }

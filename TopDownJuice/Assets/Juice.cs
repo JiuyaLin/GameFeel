@@ -46,7 +46,7 @@ public class Juice : MonoBehaviour
         Squish();
         myAudioSource.PlayOneShot(baseClip);
         mainCamera.GetComponent<CameraJuice>().BeginShake(0.1f, 0.1f, 0.1f, 0.1f);
-        GetComponent<ParticleJuiceCreator>.CreateParticles(30);
+        GetComponent<ParticleJuiceCreator>().CreateParticles(30);
     }
 
     void Squish(){
