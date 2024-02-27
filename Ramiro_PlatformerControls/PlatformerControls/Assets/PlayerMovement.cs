@@ -114,7 +114,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //move to the next position while checking all spaces between the current position and the next position
-        rb.MovePosition(rb.position + velocity);
+        rb.MovePosition(rb.position + velocity); 
+        //rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime); //CHANGED HERE, VALUE NOT EDITED IN EDITOR
     }
 
 
