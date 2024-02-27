@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     PlayerInput myPlayerInput;
-    float inputX;
+    float inputX, inputY;
     Rigidbody2D rb;
     [SerializeField] float speed, gravity, jumpStartingPush, jumpHeldTimerMax, fallSpeedMax, 
                         jumpPreloadTimerMax, coyoteTimerMax, apexTimerMax, wallTimerMax, lastJumpPressedTimerMax,
@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //get values from inputs
         inputX = myPlayerInput.actions["Move"].ReadValue<Vector2>().x; //analog stick/WASD horizontal input for left/right movement
+        inputY = myPlayerInput.actions["Move"].ReadValue<Vector2>().y; //analog stick/WASD vertical input for up/down movement
         jumpHeld = myPlayerInput.actions["Jump"].ReadValue<float>() > 0.9f; //is the jump button being held down this frame?
         jumpTriggered = myPlayerInput.actions["Jump"].triggered; //was the jump button just pressed this frame?
         if(myPlayerInput.actions["Move"].ReadValue<Vector2>().x == 0){
@@ -86,7 +87,6 @@ public class PlayerMovement : MonoBehaviour
             velocity.y -= .3f * gravity * Time.fixedDeltaTime;
             //...and enable the footBoxCollider, which allows me to land on the edge of platforms
             if(apexTimer <=0) footBoxCollider.enabled = true;
-        
         }else{ //not pushed, not jumping, apply normal gravity
             velocity.y -= gravity * Time.fixedDeltaTime;
             if (velocity.y < -fallSpeedMax) velocity.y = -fallSpeedMax; //make sure fall speed never exceeds fallSpeedMax
@@ -97,18 +97,21 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if(climbing && lastJumpPressedTimer > 0){ //wall jump x
-            Debug.Log("wall jump");
-            velocity.y = jumpStartingPush * wallJumpScalerY;
-            velocity.x = -inputX * jumpStartingPush * wallJumpScalerX;
-            apexReached = true;
-            wallJumping = true;
-        }else if (climbing && wallJumping){
-            velocity.x -= 1.2f * inputX * gravity * Time.fixedDeltaTime;
+        if(climbing){
+            if(lastJumpPressedTimer > 0){ //wall jump x
+                Debug.Log("wall jump");
+                velocity.y = jumpStartingPush * wallJumpScalerY;
+                velocity.x = -inputX * jumpStartingPush * wallJumpScalerX;
+                apexReached = true;
+                wallJumping = true;
+            }else if (wallJumping){
+                velocity.x -= 1.2f * inputX * gravity * Time.fixedDeltaTime;
+            }else {
+                velocity.y = inputY * speed * Time.fixedDeltaTime;
+            }
         }else{ //x movement on platform
             velocity.x = inputX * speed * Time.fixedDeltaTime;
         }
-
 
         //move to the next position while checking all spaces between the current position and the next position
         rb.MovePosition(rb.position + velocity);
