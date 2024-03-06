@@ -5,7 +5,8 @@ using UnityEngine;
 public class CamerMovement : MonoBehaviour
 {
     [SerializeField] Transform player;
-    private Vector3 camCurLoc, camAimLoc, camRot, iniLocDifference;
+    private Vector3 camCurLoc, camAimLoc, iniLocDifference;
+    public Vector3 camRot;
     [SerializeField] float camLerpSpeed;
 
     // Start is called before the first frame update
@@ -21,4 +22,5 @@ public class CamerMovement : MonoBehaviour
 
         transform.position = camCurLoc;
     }
+
 }
