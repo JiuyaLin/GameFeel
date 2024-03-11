@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - WallBounce
-  - WallFlip
-  - WallCamra
+  - WallBreak
+  - NeutralWall
+  - Trincket
   layers:
   - Default
   - TransparentFX
