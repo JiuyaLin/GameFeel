@@ -13,7 +13,7 @@ public class PlayerMovement2 : MonoBehaviour
 {
     Vector3 velocityThisFrame, velocity, acceleration, microVelocity, positionNextFrame, bounceAim, 
         spriteSize, spriteScaler, bursLocation, startPos;
-    private float particleTimer, burstParticleCounter, burstCount, spritePosX, spritePosY;
+    private float particleTimer, burstParticleCounter, burstCount, spritePosX, spritePosY, bounceSafeTimer;
     private bool collidingApplied, bouncingApplied;
     private char curKey;
     private string particleBurstType;
@@ -40,6 +40,7 @@ public class PlayerMovement2 : MonoBehaviour
         spriteSize.y = pcSpriteRenderer.bounds.size.y;
         particleTimer = Random.Range(particleTimerRange.x, particleTimerRange.y);
         burstCount = 25;//total number of particles
+        bounceSafeTimer = 0.1f;
         burstParticleCounter = burstCount; 
         collidingApplied = false;
         bouncingApplied = false;
@@ -67,16 +68,19 @@ public class PlayerMovement2 : MonoBehaviour
         float angleVelocityVsAcceleration = Vector3.Angle(velocity, acceleration);
         float counterPushRatio = angleVelocityVsAcceleration / 180;
         acceleration = Vector3.zero; //zero out the acceleration at the beginning of each frame
+        //velocity = Vector3.zero;
         //using get keydown/up to eliminate hierarchy of keys
-        if(Input.GetKeyDown(KeyCode.W)) curKey = 'W';
-        if(Input.GetKeyDown(KeyCode.S)) curKey = 'S';
-        if(Input.GetKeyDown(KeyCode.D)) curKey = 'D';
-        if(Input.GetKeyDown(KeyCode.A)) curKey = 'A';
-        if(Input.anyKeyDown) audioSource.PlayOneShot(audioclips[3]);
-        if(curKey == 'W') acceleration.y += 1 ; //W moves up
-        if(curKey == 'S') acceleration.y -= 1 ; //S moves down
-        if(curKey == 'D') acceleration.x += 1 ; //D moves right
-        if(curKey == 'A') acceleration.x -= 1 ; //A moves left
+        if(!bouncingApplied){
+            if(Input.GetKeyDown(KeyCode.W)) curKey = 'W';
+            if(Input.GetKeyDown(KeyCode.S)) curKey = 'S';
+            if(Input.GetKeyDown(KeyCode.D)) curKey = 'D';
+            if(Input.GetKeyDown(KeyCode.A)) curKey = 'A';
+            if(Input.anyKeyDown) audioSource.PlayOneShot(audioclips[3]);
+            if(curKey == 'W') acceleration.y += 1 ; //W moves up
+            if(curKey == 'S') acceleration.y -= 1 ; //S moves down
+            if(curKey == 'D') acceleration.x += 1 ; //D moves right
+            if(curKey == 'A') acceleration.x -= 1 ; //A moves left
+        }
         if(Input.GetKeyUp(KeyCode.W) && curKey == 'W'
         || Input.GetKeyUp(KeyCode.A) && curKey == 'A'
         || Input.GetKeyUp(KeyCode.S) && curKey == 'S'
@@ -187,6 +191,8 @@ public class PlayerMovement2 : MonoBehaviour
         transform.position = positionNextFrame;
         particleTimer -= Time.deltaTime;
         timer += Time.deltaTime;
+        bounceSafeTimer -= Time.deltaTime;
+        if(bounceSafeTimer < 0) bouncingApplied = false;
     }
 
 
@@ -225,8 +231,10 @@ public class PlayerMovement2 : MonoBehaviour
             burstParticleCounter = burstCount;
             particleBurstType = "Break";
             audioSource.PlayOneShot(audioclips[1]);
-        }else if(closestWall != null && closestWall.tag == "WallBounce"){
+        }else if(closestWall != null && closestWall.tag == "WallBounce" &&
+        bounceSafeTimer < 0){
             Debug.Log("Bounce Wall");
+            bounceSafeTimer = 0.1f;
             bounceAim = positionNextFrame;
             if(Mathf.Abs(velocity.x) > Mathf.Abs(velocity.y)){
                 bounceAim.x -= velocity.x * Time.deltaTime * bounceFactor;

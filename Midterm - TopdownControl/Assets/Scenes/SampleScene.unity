@@ -749,10 +749,10 @@ MonoBehaviour:
   playerSprite: {fileID: 1237689813}
   wallList: []
   trincketList: []
-  movementIncrement: 0.001
-  accelerationSpeed: 0.5
-  maxSpeed: 0.2
-  friction: 0.5
+  movementIncrement: 0.1
+  accelerationSpeed: 0.8
+  maxSpeed: 0.4
+  friction: 0.8
   camFlipTime: 1
   counterAccelerationModifier: 10
   bounceFactor: 300
