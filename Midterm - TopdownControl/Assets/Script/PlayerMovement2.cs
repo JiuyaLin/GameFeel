@@ -97,7 +97,7 @@ public class PlayerMovement2 : MonoBehaviour
             }
         }
 
-        velocityThisFrame = velocity;
+        velocityThisFrame = velocity * Time.deltaTime;
         positionNextFrame = transform.position;
         bool velXPositive = false;
         if(velocityThisFrame.x > 0) velXPositive = true;
