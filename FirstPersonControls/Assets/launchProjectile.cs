@@ -8,13 +8,13 @@ public class launchProjectile : MonoBehaviour
     [SerializeField] GameObject projectilePrefab;
     PlayerInput playerInput;
     bool projectileTriggered;
-    Transform cameraHolder;
+    Transform cameraFocus;
 
     // Start is called before the first frame update
     void Start()
     {
         playerInput = GetComponent<PlayerInput>();
-        cameraHolder = transform.Find("Camera Holder");
+        cameraFocus = transform.Find("CameraFocus");
     }
 
     // Update is called once per frame
@@ -22,8 +22,8 @@ public class launchProjectile : MonoBehaviour
     {
         projectileTriggered = playerInput.actions["Projectile"].triggered;
         if(projectileTriggered){
-            Instantiate(projectilePrefab, cameraHolder.transform.position +
-            cameraHolder.transform.forward * 5, cameraHolder.transform.rotation);
+            Instantiate(projectilePrefab, cameraFocus.transform.position +
+            cameraFocus.transform.forward * 2, cameraFocus.transform.rotation);
         }
     }
 }

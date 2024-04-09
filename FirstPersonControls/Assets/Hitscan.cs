@@ -60,6 +60,9 @@ public class Hitscan : MonoBehaviour
     bool HitscanEvaluateObjectHit(RaycastHit hit){
         if(hit.collider.gameObject.tag == "Enemytarget"){
             Debug.Log("Hit Enemy");
+            Destroy(hit.collider.gameObject);
+            InstantiateFruit.RangeKill++;
+            InstantiateFruit.totalFruitNum--;
             return true;
         }
         return false;
